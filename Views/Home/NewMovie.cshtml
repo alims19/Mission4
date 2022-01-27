@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Add a Movie";
+}
+
+@model Mission4.Models.ApplicationResponse
+
+@*Add a movie to the database page*@
+
+<h1 style="text-align: center; color: indianred">Add a Movie to My <a href="https://docs.google.com/spreadsheets/d/1YXv5DQwyENjIlmzUx1ySZjprGUtbmxrxStSwELMSqf8/edit?usp=sharing" target="_blank" style="color:indianred">Database</a></h1>
+<br />
+
+<img src="~/img/movie.jpeg" width="600" style="float:right" />
+<br />
+
+<div>
+    @*Fields for input*@
+    <form method="post" style="margin: 0 auto">
+        <label asp-for="Category">Category:</label>
+        <input asp-for="Category" /><br /><br />
+
+        <label asp-for="Title">Title:</label>
+        <input asp-for="Title" /><br /><br />
+
+        <label asp-for="Year">Year:</label>
+        <input asp-for="Year" /><br /><br />
+
+        <label asp-for="Director">Director:</label>
+        <input asp-for="Director" /><br /><br />
+
+        <label asp-for="Rating">Rating:</label>
+        <select asp-for="Rating">
+            <option value="G">G</option>
+            <option value="PG">PG</option>
+            <option value="PG13">PG-13</option>
+            <option value="R">R</option>
+        </select><br /><br />
+
+        <label asp-for="Edited">Edited:</label>
+        <select asp-for="Edited">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select><br /><br />
+
+        <label asp-for="LentTo">Lent To:</label>
+        <input asp-for="LentTo" /><br /><br />
+
+        <label asp-for="Notes">Notes:</label>
+        <input asp-for="Notes" /><br /><br /><br />
+
+        <button type="submit">No Going Back</button>
+        <div asp-validation-summary="All"></div><br /><br /><br />
+    </form>
+</div>
+
