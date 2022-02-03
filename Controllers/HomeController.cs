@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mission4.Models;
 
@@ -11,12 +12,10 @@ namespace Mission4.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private MovieApplicationContext _MovieContext { get; set; }
 
-        public HomeController(ILogger<HomeController> logger, MovieApplicationContext movie)
+        public HomeController(MovieApplicationContext movie)
         {
-            _logger = logger;
             _MovieContext = movie;
         }
 
@@ -30,16 +29,19 @@ namespace Mission4.Controllers
             return View();
         }
 
+        // Adding a new movie
         [HttpGet]
         public IActionResult NewMovie()
         {
+            ViewBag.Categories = _MovieContext.Categories.ToList();
+
             return View();
         }
 
         [HttpPost]
         public IActionResult NewMovie(ApplicationResponse ar)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _MovieContext.Add(ar);
                 _MovieContext.SaveChanges();
@@ -48,19 +50,59 @@ namespace Mission4.Controllers
             }
             else
             {
+                ViewBag.Categories = _MovieContext.Categories.ToList();
+
                 return View(ar);
             }
         }
 
-        public IActionResult Privacy()
+        // List of movies
+        public IActionResult MovieList()
         {
-            return View();
+            var applications = _MovieContext.Responses
+                .Include(x => x.Category)
+                .ToList();
+
+            return View(applications);
+
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        // Update a movie
+        [HttpGet]
+        public IActionResult Update(int applicationid)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            ViewBag.Categories = _MovieContext.Categories.ToList();
+
+            var application = _MovieContext.Responses.Single(x => x.ApplicationId == applicationid);
+
+            return View("NewMovie", application);
+        }
+
+        [HttpPost]
+        public IActionResult Update(ApplicationResponse ar)
+        {
+            _MovieContext.Update(ar);
+            _MovieContext.SaveChanges();
+
+            return RedirectToAction("MovieList");
+        }
+
+        //Delete a movie
+        [HttpGet]
+        public IActionResult Delete(int applicationid)
+        {
+            var application = _MovieContext.Responses.Single(x => x.ApplicationId == applicationid);
+
+            return View(application);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(ApplicationResponse ar)
+        {
+            _MovieContext.Responses.Remove(ar);
+            _MovieContext.SaveChanges();
+
+            return RedirectToAction("MovieList");
         }
     }
 }

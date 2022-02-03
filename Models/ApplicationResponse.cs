@@ -9,9 +9,6 @@ namespace Mission4.Models
         [Required]
         public int ApplicationId { get; set; }
 
-        [Required(ErrorMessage = "Category is Required")]
-        public string Category { get; set; }
-
         [Required(ErrorMessage = "Title is Required")]
         public string Title { get; set; }
 
@@ -31,5 +28,11 @@ namespace Mission4.Models
 
         [MaxLength(25)]
         public string Notes { get; set; }
+
+
+        //Foregin key relationship
+        [Required(ErrorMessage = "Category is Required")]
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
     }
 }
